@@ -1,0 +1,3 @@
+[submodule "volumes/src/pi-hole"]
+	path = volumes/src/pi-hole
+	url = https://github.com/pi-hole/pi-hole
