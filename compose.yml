@@ -1,0 +1,30 @@
+services:
+  pihole:
+    image: pihole/pihole:latest
+    restart: unless-stopped
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "${PIHOLE_PORT}:80/tcp"
+      # - "8083:443/tcp"
+    environment:
+      # Better to keep secrets out of compose; consider .env or docker secret instead
+      FTLCONF_webserver_api_password: ${PIHOLE_WEBPASSWORD}
+      FTLCONF_dns_listeningMode: "all"
+      TZ: ${TZ}:UTC
+    volumes:
+      # Read-only copy of your custom configs/themes (optional)
+      - ./volumes/src/pi-hole:/opt/pihole/custom:ro
+      # Persistent data
+      - ./volumes/storage/pi-hole/etc-pihole:/etc/pihole
+      - ./volumes/storage/pi-hole/etc-dnsmasq.d:/etc/dnsmasq.d
+    cap_add:
+      - NET_ADMIN
+      - SYS_NICE
+
+  it-tools:
+    image: corentinth/it-tools
+    container_name: it-tools
+    restart: unless-stopped
+    ports:
+      - "${IT_TOOLS_PORT}:80/tcp"
